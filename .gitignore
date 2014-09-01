@@ -41,3 +41,5 @@ node_modules
 #sftp configuration file
 sftp-config.json
 
+# Ignore changes to sensitive data in settings.json
+conf/settings.json
