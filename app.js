@@ -50,7 +50,7 @@ app.get('/yo', function(req, res) {
         "username": req.query.username
     };
     request.post({
-            url: "http://api.justyo.co/yo/",
+            url: "https://api.justyo.co/yo/",
             form: {
                 "api_token": API_KEY,
                 "username": req.query.username
@@ -74,7 +74,7 @@ var newUrl;
 
 function send_yo(username) {
     request.post({
-            url: "http://api.justyo.co/yo/",
+            url: "https://api.justyo.co/yo/",
             form: {
                 "api_token": API_KEY,
                 "username": username
@@ -97,7 +97,7 @@ function send_yo(username) {
 function send_yo_all() {
     // body...
     request.post({
-            url: "http://api.justyo.co/yoall/",
+            url: "https://api.justyo.co/yoall/",
             form: {
                 "api_token": API_KEY
             }
