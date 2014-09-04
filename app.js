@@ -135,7 +135,14 @@ function writeNewUrl(url) {
 }
 
 function readJson() {
-    var url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
+    if (process.argv[2]) {
+        var url = "http://gdata.youtube.com/feeds/users/" + process.argv[2] + "/uploads?max-results=1&alt=json";
+        console.log("Using different youtube user: " + process.argv[2]);
+    } else {
+        var url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
+        console.log("Using phil by default..");
+    }
+    
 
     request({
         url: url,
@@ -148,9 +155,10 @@ function readJson() {
                 // send yo
                 // 
                 send_yo("JONATHANNNN");
+                writeNewUrl(tmp_url);
+                originalUrl = tmp_url;
+                console.log("Current url: " + originalUrl);
             };
-            writeNewUrl(tmp_url);
-            originalUrl = tmp_url;
         }
     });
 }
@@ -160,11 +168,13 @@ if (fs.existsSync(STORAGE_FILE)) {
     //read
     console.log("File exists");
     originalUrl = readUrlFromFile(STORAGE_FILE);
+    console.log("Current url: " + originalUrl);
 } else {
     console.log("File does not exist, creating file.");
     fs.openSync(STORAGE_FILE, 'w');
     console.log("Writing empty url string.");
     writeNewUrl("");
+    console.log("Current url: " + "\"\"");
 }
 
 setInterval(readJson(), 60 * 10 * 1000);
