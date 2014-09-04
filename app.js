@@ -7,11 +7,17 @@ var express = require('express'),
     fs = require('fs');
 var app = module.exports = express.createServer();
 
-// API
-
-// Read API_KEY from conf/settings.json file:
 var API_KEY = ""
 var STORAGE_FILE = "./config.json"
+
+// Read API_KEY from conf/settings.json file:
+if (API_KEY != "") {
+    fs.readFileSync("./conf/settings.json", function(err, data) {
+        if (err) throw err;
+        console.log("Reading API_KEY from conf/settings.json")
+        API_KEY = JSON.parse(data).api_key
+    });
+}
 
 // Configuration
 
