@@ -173,7 +173,7 @@ function readJson() {
             if (tmp_url != originalUrl) {
                 // send yo
                 // 
-                sendYo("JONATHANNNN");
+                sendYo("JONATHANNNN", tmp_url);
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
                 console.log("Current url: " + originalUrl);
