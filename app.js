@@ -50,7 +50,7 @@ app.get('/yo', function(req, res) {
         "username": req.query.username
     };
     request.post({
-            url: "http://api.justyo.co/yoall/",
+            url: "http://api.justyo.co/yo/",
             form: {
                 "api_token": API_KEY,
                 "username": req.query.username
@@ -61,6 +61,12 @@ app.get('/yo', function(req, res) {
                 console.log(body);
             }
         });
+    if (fs.existsSync("users.file")) {
+        fs.appendFile("users.file", req.query.username, function(err) {
+            if (err) throw err;
+               console.log('Appending user to file failed! ' + req.query.username);
+        })
+    }
 });
 
 var originalUrl = "";
