@@ -46,3 +46,6 @@ conf/settings.json
 
 # Ignore local config.json file
 config.json
+
+# Retro users database
+users.file
