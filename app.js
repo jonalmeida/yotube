@@ -1,12 +1,10 @@
-
 /**
  * Module dependencies.
  */
-
-var express = require('express')
-  , routes = require('./routes')
-  , request = require('request')
-  , fs = require('fs');
+var express = require('express'),
+    routes = require('./routes'),
+    request = require('request'),
+    fs = require('fs');
 var app = module.exports = express.createServer();
 
 // API
@@ -17,75 +15,86 @@ var STORAGE_FILE = "./config.json"
 
 // Configuration
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+app.configure(function() {
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'jade');
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
+    app.use(express.static(__dirname + '/public'));
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+app.configure('development', function() {
+    app.use(express.errorHandler({
+        dumpExceptions: true,
+        showStack: true
+    }));
 });
 
-app.configure('production', function(){
-  app.use(express.errorHandler());
+app.configure('production', function() {
+    app.use(express.errorHandler());
 });
 
 app.get('/', routes.index);
 
 app.get('/yo', function(req, res) {
     console.log("Received a yo. Responding back...");
-    data = {"api_token":API_KEY, "username":req.query.username};
-  request.post(
-    {
-        url:     "http://api.justyo.co/yoall/",
-        form:    { "api_token" : API_KEY, "username":req.query.username }
-    },
-    function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-      }
-    });
+    data = {
+        "api_token": API_KEY,
+        "username": req.query.username
+    };
+    request.post({
+            url: "http://api.justyo.co/yoall/",
+            form: {
+                "api_token": API_KEY,
+                "username": req.query.username
+            }
+        },
+        function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body);
+            }
+        });
 });
 
 var originalUrl = "";
 var newUrl;
 
 function send_yo(username) {
-  request.post(
-    {
-        url:     "http://api.justyo.co/yo/",
-        form:    { "api_token" : API_KEY, "username": username}
-    },
-    function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-      } else {
-        console.log("ERROR:");
-        console.log(error);
-        console.log("RESPONSE:");
-        console.log(response);
-        console.log("BODY:");
-        console.log(body);
-      }
-    });
+    request.post({
+            url: "http://api.justyo.co/yo/",
+            form: {
+                "api_token": API_KEY,
+                "username": username
+            }
+        },
+        function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body);
+            } else {
+                console.log("ERROR:");
+                console.log(error);
+                console.log("RESPONSE:");
+                console.log(response);
+                console.log("BODY:");
+                console.log(body);
+            }
+        });
 }
 
-function send_yo_all () {
-  // body...
-  request.post(
-    {
-        url:     "http://api.justyo.co/yoall/",
-        form:    { "api_token" : API_KEY}
-    },
-    function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-      }
-    });
+function send_yo_all() {
+    // body...
+    request.post({
+            url: "http://api.justyo.co/yoall/",
+            form: {
+                "api_token": API_KEY
+            }
+        },
+        function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body);
+            }
+        });
 }
 
 function readUrlFromFile(file) {
@@ -100,7 +109,7 @@ function readUrlFromFile(file) {
 //writeFile();
 function readFile() {
     fs.readFile(STORAGE_FILE, function(err, data) {
-        if(err) throw err;
+        if (err) throw err;
         console.log(JSON.parse(data));
     });
 }
@@ -118,11 +127,11 @@ function writeFile() {
 }
 
 function writeNewUrl(url) {
-  fs.writeFileSync(STORAGE_FILE,
-    JSON.stringify({
-      "url": url
-    }, null, 4)
-  );
+    fs.writeFileSync(STORAGE_FILE,
+        JSON.stringify({
+            "url": url
+        }, null, 4)
+    );
 }
 
 function readJson() {
@@ -148,19 +157,19 @@ function readJson() {
 
 
 if (fs.existsSync(STORAGE_FILE)) {
-  //read
-  console.log("File exists");
-  originalUrl = readUrlFromFile(STORAGE_FILE);
+    //read
+    console.log("File exists");
+    originalUrl = readUrlFromFile(STORAGE_FILE);
 } else {
-  console.log("File does not exist, creating file.");
-  fs.openSync(STORAGE_FILE, 'w');
-  console.log("Writing empty url string.");
-  writeNewUrl("");
+    console.log("File does not exist, creating file.");
+    fs.openSync(STORAGE_FILE, 'w');
+    console.log("Writing empty url string.");
+    writeNewUrl("");
 }
 
-setInterval(readJson(), 60*10*1000);
+setInterval(readJson(), 60 * 10 * 1000);
 
 
-app.listen(3000, function(){
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+app.listen(3000, function() {
+    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
