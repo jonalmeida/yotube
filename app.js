@@ -184,7 +184,7 @@ if (fs.existsSync(STORAGE_FILE)) {
     console.log("Current url: " + "\"\"");
 }
 
-setInterval(readJson, 10 * 1000);
+setInterval(readJson, 60 * 10 * 1000);
 
 
 app.listen(3000, function() {
