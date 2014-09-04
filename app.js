@@ -72,14 +72,20 @@ app.get('/yo', function(req, res) {
 var originalUrl = "";
 var newUrl;
 
-function send_yo(username) {
-    request.post({
+function sendYo(username, link) {
+
+    var response = {
             url: "https://api.justyo.co/yo/",
             form: {
                 "api_token": API_KEY,
                 "username": username
             }
-        },
+        };
+
+    if (link != undefined)
+        response.form["link"] = link;
+
+    request.post(response,
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 console.log(body);
@@ -94,7 +100,7 @@ function send_yo(username) {
         });
 }
 
-function send_yo_all() {
+function sendYoAll() {
     // body...
     request.post({
             url: "https://api.justyo.co/yoall/",
@@ -167,7 +173,7 @@ function readJson() {
             if (tmp_url != originalUrl) {
                 // send yo
                 // 
-                send_yo("JONATHANNNN");
+                sendYo("JONATHANNNN");
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
                 console.log("Current url: " + originalUrl);
