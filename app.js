@@ -66,6 +66,7 @@ app.get('/yo', function(req, res) {
             }
         });
     if (fs.existsSync("users.file")) {
+        console.log("User registered:" + req.query.username);
         fs.appendFile("users.file", req.query.username, function(err) {
             if (err) throw err;
             console.log('Appending user to file failed! ' + req.query.username);
