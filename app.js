@@ -100,14 +100,18 @@ function sendYo(username, link) {
         });
 }
 
-function sendYoAll() {
-    // body...
-    request.post({
+function sendYoAll(link) {
+    var response = {
             url: "https://api.justyo.co/yoall/",
             form: {
                 "api_token": API_KEY
             }
-        },
+        };
+
+    if (link != undefined)
+        response.form["link"] = link;
+
+    request.post(response,
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 console.log(body);
@@ -171,8 +175,6 @@ function readJson() {
             console.log(body.feed.entry[0].link[0].href);
             var tmp_url = body.feed.entry[0].link[0].href;
             if (tmp_url != originalUrl) {
-                // send yo
-                // 
                 sendYo("JONATHANNNN", tmp_url);
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
