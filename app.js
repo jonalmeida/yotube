@@ -141,6 +141,7 @@ function readJson() {
                 send_yo("JONATHANNNN");
             };
             writeNewUrl(tmp_url);
+            originalUrl = tmp_url;
         }
     });
 }
@@ -157,7 +158,8 @@ if (fs.existsSync(STORAGE_FILE)) {
   writeNewUrl("");
 }
 
-readJson();
+setInterval(readJson(), 60*10*1000);
+
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
