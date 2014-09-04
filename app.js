@@ -51,19 +51,24 @@ app.get('/yo', function(req, res) {
     });
 });
 
-var originalUrl;
+var originalUrl = "";
 var newUrl;
-
-readUrlFromFile(STORAGE_FILE, originalUrl);
 
 function send_yo(username) {
   request.post(
     {
-        url:     "http://api.justyo.co/yoa/",
+        url:     "http://api.justyo.co/yo/",
         form:    { "api_token" : API_KEY, "username": username}
     },
     function (error, response, body) {
       if (!error && response.statusCode == 200) {
+        console.log(body);
+      } else {
+        console.log("ERROR:");
+        console.log(error);
+        console.log("RESPONSE:");
+        console.log(response);
+        console.log("BODY:");
         console.log(body);
       }
     });
@@ -83,12 +88,9 @@ function send_yo_all () {
     });
 }
 
-function readUrlFromFile(file, url) {
-    fs.readFile(file, function(err, data) {
-      if(err) throw err;
-      url = (JSON.parse(data)).url;
-      return (JSON.parse(data)).url;
-    });
+function readUrlFromFile(file) {
+    var config_data = fs.readFileSync(file);
+    return JSON.parse(config_data).url;
 }
 
 
@@ -115,6 +117,14 @@ function writeFile() {
     );
 }
 
+function writeNewUrl(url) {
+  fs.writeFileSync(STORAGE_FILE,
+    JSON.stringify({
+      "url": url
+    }, null, 4)
+  );
+}
+
 function readJson() {
     var url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
 
@@ -123,15 +133,31 @@ function readJson() {
         json: true
     }, function(error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body.feed.entry[0].id.$t);
-            var tmp_url = body.feed.entry[0].id.$t;
+            console.log(body.feed.entry[0].link[0].href);
+            var tmp_url = body.feed.entry[0].link[0].href;
             if (tmp_url != originalUrl) {
                 // send yo
                 // 
+                send_yo("JONATHANNNN");
             };
+            writeNewUrl(tmp_url);
         }
     });
 }
+
+
+if (fs.existsSync(STORAGE_FILE)) {
+  //read
+  console.log("File exists");
+  originalUrl = readUrlFromFile(STORAGE_FILE);
+} else {
+  console.log("File does not exist, creating file.");
+  fs.openSync(STORAGE_FILE, 'w');
+  console.log("Writing empty url string.");
+  writeNewUrl("");
+}
+
+readJson();
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
