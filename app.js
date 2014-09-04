@@ -11,6 +11,7 @@ var app = module.exports = express.createServer();
 
 // API
 
+// Read API_KEY from conf/settings.json file:
 var API_KEY = ""
 var STORAGE_FILE = "./config.json"
 
@@ -32,12 +33,6 @@ app.configure('development', function(){
 app.configure('production', function(){
   app.use(express.errorHandler());
 });
-
-// Check json in a file
-
-// Is url == new request?
-// while true(), keep checking
-//
 
 app.get('/', routes.index);
 
