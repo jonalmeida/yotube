@@ -135,6 +135,7 @@ function writeNewUrl(url) {
 }
 
 function readJson() {
+    console.log("Calling readJson()");
     if (process.argv[2]) {
         var url = "http://gdata.youtube.com/feeds/users/" + process.argv[2] + "/uploads?max-results=1&alt=json";
         console.log("Using different youtube user: " + process.argv[2]);
@@ -177,7 +178,7 @@ if (fs.existsSync(STORAGE_FILE)) {
     console.log("Current url: " + "\"\"");
 }
 
-setInterval(readJson(), 60 * 10 * 1000);
+setInterval(readJson, 10 * 1000);
 
 
 app.listen(3000, function() {
