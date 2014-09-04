@@ -10,6 +10,8 @@ var app = module.exports = express.createServer();
 var API_KEY = ""
 var STORAGE_FILE = "./config.json"
 
+var originalUrl = "";
+
 // Read API_KEY from conf/settings.json file:
 if (API_KEY != "") {
     fs.readFileSync("./conf/settings.json", function(err, data) {
@@ -64,23 +66,20 @@ app.get('/yo', function(req, res) {
     if (fs.existsSync("users.file")) {
         fs.appendFile("users.file", req.query.username, function(err) {
             if (err) throw err;
-               console.log('Appending user to file failed! ' + req.query.username);
+            console.log('Appending user to file failed! ' + req.query.username);
         })
     }
 });
 
-var originalUrl = "";
-var newUrl;
-
 function sendYo(username, link) {
 
     var response = {
-            url: "https://api.justyo.co/yo/",
-            form: {
-                "api_token": API_KEY,
-                "username": username
-            }
-        };
+        url: "https://api.justyo.co/yo/",
+        form: {
+            "api_token": API_KEY,
+            "username": username
+        }
+    };
 
     if (link != undefined)
         response.form["link"] = link;
@@ -102,11 +101,11 @@ function sendYo(username, link) {
 
 function sendYoAll(link) {
     var response = {
-            url: "https://api.justyo.co/yoall/",
-            form: {
-                "api_token": API_KEY
-            }
-        };
+        url: "https://api.justyo.co/yoall/",
+        form: {
+            "api_token": API_KEY
+        }
+    };
 
     if (link != undefined)
         response.form["link"] = link;
@@ -124,11 +123,6 @@ function readUrlFromFile(file) {
     return JSON.parse(config_data).url;
 }
 
-
-// read from file initially
-//readJson();
-//readFile();
-//writeFile();
 function readFile() {
     fs.readFile(STORAGE_FILE, function(err, data) {
         if (err) throw err;
@@ -165,7 +159,7 @@ function readJson() {
         var url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
         console.log("Using phil by default..");
     }
-    
+
 
     request({
         url: url,
