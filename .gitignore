@@ -43,3 +43,6 @@ sftp-config.json
 
 # Ignore changes to sensitive data in settings.json
 conf/settings.json
+
+# Ignore local config.json file
+config.json
