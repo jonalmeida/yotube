@@ -13,7 +13,9 @@ var STORAGE_FILE = "./config.json"
 var originalUrl = "";
 
 // Read API_KEY from conf/settings.json file:
-if (API_KEY != "") {
+if (process.env.API_KEY) {
+    API_KEY = process.env.API_KEY;
+} else if (API_KEY != "") {
     fs.readFileSync("./conf/settings.json", function(err, data) {
         if (err) throw err;
         console.log("Reading API_KEY from conf/settings.json")
