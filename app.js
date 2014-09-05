@@ -4,6 +4,7 @@
 var express = require('express'),
     routes = require('./routes'),
     request = require('request'),
+    winston = require('winston'),
     fs = require('fs');
 var app = module.exports = express.createServer();
 
@@ -12,13 +13,18 @@ var STORAGE_FILE = "./config.json"
 
 var originalUrl = "";
 
+// Logging
+winston.add(winston.transports.File, { filename: 'debug.log' });
+// winston.remove(winston.transports.Console);
+
+
 // Read API_KEY from conf/settings.json file:
 if (process.env.API_KEY) {
     API_KEY = process.env.API_KEY;
 } else if (API_KEY != "") {
     fs.readFileSync("./conf/settings.json", function(err, data) {
         if (err) throw err;
-        console.log("Reading API_KEY from conf/settings.json")
+        winston.info("Reading API_KEY from conf/settings.json")
         API_KEY = JSON.parse(data).api_key
     });
 }
@@ -48,7 +54,7 @@ app.configure('production', function() {
 app.get('/', routes.index);
 
 app.get('/yo', function(req, res) {
-    console.log("Received a yo. Responding back...");
+    winston.info("Received a yo. Responding back...");
     data = {
         "api_token": API_KEY,
         "username": req.query.username
@@ -62,14 +68,14 @@ app.get('/yo', function(req, res) {
         },
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(body);
+                winston.info(body);
             }
         });
     if (fs.existsSync("users.file")) {
-        console.log("User registered:" + req.query.username);
+        winston.info("User registered:" + req.query.username);
         fs.appendFile("users.file", req.query.username + "\n", function(err) {
             if (err)
-                console.log('Appending user to file failed! ' + req.query.username);
+                winston.error('Appending user to file failed! ' + req.query.username);
         })
     }
 });
@@ -90,14 +96,14 @@ function sendYo(username, link) {
     request.post(response,
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(body);
+                winston.error(body);
             } else {
-                console.log("ERROR:");
-                console.log(error);
-                console.log("RESPONSE:");
-                console.log(response);
-                console.log("BODY:");
-                console.log(body);
+                winston.info("ERROR:");
+                winston.info(error);
+                winston.info("RESPONSE:");
+                winston.info(response);
+                winston.info("BODY:");
+                winston.info(body);
             }
         });
 }
@@ -116,7 +122,7 @@ function sendYoAll(link) {
     request.post(response,
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(body);
+                winston.info(body);
             }
         });
 }
@@ -129,7 +135,7 @@ function readUrlFromFile(file) {
 function readFile() {
     fs.readFile(STORAGE_FILE, function(err, data) {
         if (err) throw err;
-        console.log(JSON.parse(data));
+        winston.info(JSON.parse(data));
     });
 }
 
@@ -140,7 +146,7 @@ function writeFile() {
         }, null, 4),
         function(err) {
             if (err) throw err;
-            console.log("SAVED!!!!!!!!!!!!");
+            winston.info("SAVED!!!!!!!!!!!!");
         }
     );
 }
@@ -154,13 +160,13 @@ function writeNewUrl(url) {
 }
 
 function readJson() {
-    console.log("Calling readJson()");
+    winston.info("Calling readJson()");
     if (process.argv[2]) {
         var url = "http://gdata.youtube.com/feeds/users/" + process.argv[2] + "/uploads?max-results=1&alt=json";
-        console.log("Using different youtube user: " + process.argv[2]);
+        winston.info("Using different youtube user: " + process.argv[2]);
     } else {
         var url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
-        console.log("Using phil by default..");
+        winston.info("Using phil by default..");
     }
 
 
@@ -169,13 +175,13 @@ function readJson() {
         json: true
     }, function(error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body.feed.entry[0].link[0].href);
+            winston.info(body.feed.entry[0].link[0].href);
             var tmp_url = body.feed.entry[0].link[0].href;
             if (tmp_url != originalUrl) {
                 sendYo("JONATHANNNN", tmp_url);
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
-                console.log("Current url: " + originalUrl);
+                winston.info("Current url: " + originalUrl);
             };
         }
     });
@@ -184,20 +190,20 @@ function readJson() {
 
 if (fs.existsSync(STORAGE_FILE)) {
     //read
-    console.log("File exists");
+    winston.info("File exists");
     originalUrl = readUrlFromFile(STORAGE_FILE);
-    console.log("Current url: " + originalUrl);
+    winston.info("Current url: " + originalUrl);
 } else {
-    console.log("File does not exist, creating file.");
+    winston.info("File does not exist, creating file.");
     fs.openSync(STORAGE_FILE, 'w');
-    console.log("Writing empty url string.");
+    winston.info("Writing empty url string.");
     writeNewUrl("");
-    console.log("Current url: " + "\"\"");
+    winston.info("Current url: " + "\"\"");
 }
 
 setInterval(readJson, 60 * 10 * 1000);
 
 
 app.listen(3000, function() {
-    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+    winston.info("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
