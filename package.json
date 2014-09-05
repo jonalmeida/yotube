@@ -2,6 +2,7 @@
     "name": "Yotube",
     "description": "Send a Yo when you upload a video to your channel",
     "version": "0.0.1",
+    "main": "app.js",
     "private": true,
     "dependencies": {
         "express": "2.5.8",
@@ -12,18 +13,18 @@
         "start": "node app.js"
     },
     "keywords": [
-      "yo",
-      "youtube",
-      "yotube"
+        "yo",
+        "youtube",
+        "yotube"
     ],
     "author": "jonalmeida",
     "license": "Zlib",
     "repository": {
-      "type": "git",
-      "url": "git://github.com/jonalmeida/yo-app.git"
+        "type": "git",
+        "url": "git://github.com/jonalmeida/yo-app.git"
     },
     "bugs": {
-      "url": "https://github.com/jonalmeida/yo-app/issues"
+        "url": "https://github.com/jonalmeida/yo-app/issues"
     },
     "homepage": "https://github.com/jonalmeida/yo-app"
 }
