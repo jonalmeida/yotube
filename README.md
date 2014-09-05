@@ -1,3 +1,3 @@
-Yo App
+Yotube
 ======
-A simple Yo app that does nothing
+Send a Yo when you upload a video to your channel
