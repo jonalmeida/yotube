@@ -116,6 +116,7 @@ function sendYo(username, link) {
 }
 
 function sendYoAll(link) {
+    winston.info("Sending Yo All...");
     var yoResponse = {
         url: "https://api.justyo.co/yoall/",
         form: {
@@ -130,6 +131,9 @@ function sendYoAll(link) {
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 winston.info(body);
+            } else {
+                winston.error("ERROR");
+                winston.error(error);
             }
         });
 }
@@ -176,7 +180,6 @@ function readJson() {
             winston.info(body.feed.entry[0].link[0].href);
             var tmp_url = body.feed.entry[0].link[0].href;
             if (tmp_url != originalUrl) {
-                // sendYo("JONATHANNNN", tmp_url);
                 sendYoAll(tmp_url);
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
