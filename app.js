@@ -29,10 +29,10 @@ if (process.env.API_KEY) {
 }
 
 if (process.argv[2]) {
-    var youtube_url = "http://gdata.youtube.com/feeds/users/" + process.argv[2] + "/uploads?max-results=1&alt=json";
+    var youtube_url = "https://gdata.youtube.com/feeds/api/users/" + process.argv[2] + "/uploads?v=1&max-results=2&orderby=published&alt=json";
     winston.info("Using different youtube user: " + process.argv[2]);
 } else {
-    var youtube_url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
+    var youtube_url = "https://gdata.youtube.com/feeds/api/users/sxephil/uploads?v=1&max-results=2&orderby=published&alt=json";
     winston.info("Using phil by default..");
 }
 
@@ -180,7 +180,7 @@ function readJson() {
                 sendYoAll(tmp_url);
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
-                winston.info("Current youtube_url: " + originalUrl);
+                winston.info("New youtube_url: " + originalUrl);
             };
         }
     });
@@ -191,7 +191,7 @@ if (fs.existsSync(STORAGE_FILE)) {
     //read
     winston.info("File exists");
     originalUrl = readUrlFromFile(STORAGE_FILE);
-    winston.info("Current url: " + originalUrl);
+    winston.info("Current url grabbed from file: " + originalUrl);
 } else {
     winston.info("File does not exist, creating file.");
     fs.openSync(STORAGE_FILE, 'w');
@@ -199,6 +199,8 @@ if (fs.existsSync(STORAGE_FILE)) {
     writeNewUrl("");
     winston.info("Current url: " + "\"\"");
 }
+//Initial check on startup
+readJson()
 
 setInterval(readJson, 60 * 5 * 1000);
 
