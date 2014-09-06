@@ -129,11 +129,8 @@ function sendYoAll(link) {
 
     request.post(yoResponse,
         function(error, response, body) {
-            if (!error && response.statusCode == 200) {
+            if (!error) {
                 winston.info(body);
-            } else {
-                winston.error("ERROR");
-                winston.error(error);
             }
         });
 }
