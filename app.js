@@ -17,7 +17,6 @@ var originalUrl = "";
 winston.add(winston.transports.File, { filename: 'debug.log' });
 // winston.remove(winston.transports.Console);
 
-
 // Read API_KEY from conf/settings.json file:
 if (process.env.API_KEY) {
     API_KEY = process.env.API_KEY;
@@ -204,6 +203,6 @@ if (fs.existsSync(STORAGE_FILE)) {
 setInterval(readJson, 60 * 5 * 1000);
 
 
-app.listen(3000, function() {
+app.listen(process.env.PORT || 3000, function() {
     winston.info("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
