@@ -82,7 +82,7 @@ app.get('/yo', function(req, res) {
 
 function sendYo(username, link) {
 
-    var response = {
+    var yoResponse = {
         url: "https://api.justyo.co/yo/",
         form: {
             "api_token": API_KEY,
@@ -91,9 +91,9 @@ function sendYo(username, link) {
     };
 
     if (link != undefined)
-        response.form["link"] = link;
+        yoResponse.form["link"] = link;
 
-    request.post(response,
+    request.post(yoResponse,
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 winston.error(body);
@@ -109,7 +109,7 @@ function sendYo(username, link) {
 }
 
 function sendYoAll(link) {
-    var response = {
+    var yoResponse = {
         url: "https://api.justyo.co/yoall/",
         form: {
             "api_token": API_KEY
@@ -117,9 +117,9 @@ function sendYoAll(link) {
     };
 
     if (link != undefined)
-        response.form["link"] = link;
+        yoResponse.form["link"] = link;
 
-    request.post(response,
+    request.post(yoResponse,
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 winston.info(body);
