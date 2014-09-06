@@ -29,6 +29,14 @@ if (process.env.API_KEY) {
     });
 }
 
+if (process.argv[2]) {
+    var youtube_url = "http://gdata.youtube.com/feeds/users/" + process.argv[2] + "/uploads?max-results=1&alt=json";
+    winston.info("Using different youtube user: " + process.argv[2]);
+} else {
+    var youtube_url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
+    winston.info("Using phil by default..");
+}
+
 // Configuration
 
 app.configure(function() {
@@ -161,27 +169,19 @@ function writeNewUrl(url) {
 
 function readJson() {
     winston.info("Calling readJson()");
-    if (process.argv[2]) {
-        var url = "http://gdata.youtube.com/feeds/users/" + process.argv[2] + "/uploads?max-results=1&alt=json";
-        winston.info("Using different youtube user: " + process.argv[2]);
-    } else {
-        var url = "http://gdata.youtube.com/feeds/users/sxephil/uploads?max-results=1&alt=json";
-        winston.info("Using phil by default..");
-    }
-
-
     request({
-        url: url,
+        url: youtube_url,
         json: true
     }, function(error, response, body) {
         if (!error && response.statusCode == 200) {
             winston.info(body.feed.entry[0].link[0].href);
             var tmp_url = body.feed.entry[0].link[0].href;
             if (tmp_url != originalUrl) {
-                sendYo("JONATHANNNN", tmp_url);
+                // sendYo("JONATHANNNN", tmp_url);
+                sendYoAll(tmp_url);
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
-                winston.info("Current url: " + originalUrl);
+                winston.info("Current youtube_url: " + originalUrl);
             };
         }
     });
@@ -201,7 +201,7 @@ if (fs.existsSync(STORAGE_FILE)) {
     winston.info("Current url: " + "\"\"");
 }
 
-setInterval(readJson, 60 * 10 * 1000);
+setInterval(readJson, 60 * 5 * 1000);
 
 
 app.listen(3000, function() {
