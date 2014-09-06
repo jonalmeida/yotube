@@ -6,7 +6,7 @@
     "private": true,
     "dependencies": {
         "express": "2.5.8",
-        "jade": ">= 0.0.1",
+        "jade": ">= 0.1.0",
         "request": "2.41.0",
         "winston": "0.7.3"
     },
