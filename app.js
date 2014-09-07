@@ -10,12 +10,13 @@ var app = module.exports = express.createServer();
 
 var API_KEY = ""
 var STORAGE_FILE = "./config.json"
-
 var originalUrl = "";
+var youtube_url = "https://gdata.youtube.com/feeds/api/users/sxephil/uploads?v=1&max-results=2&orderby=published&alt=json";
 
 // Logging
 winston.add(winston.transports.File, { filename: 'debug.log' });
-// winston.remove(winston.transports.Console);
+// Uncomment to stop logging to console
+//winston.remove(winston.transports.Console);
 
 // Read API_KEY from conf/settings.json file:
 if (process.env.API_KEY) {
@@ -28,11 +29,14 @@ if (process.env.API_KEY) {
     });
 }
 
+
 if (process.argv[2]) {
-    var youtube_url = "https://gdata.youtube.com/feeds/api/users/" + process.argv[2] + "/uploads?v=1&max-results=2&orderby=published&alt=json";
+    youtube_url = "https://gdata.youtube.com/feeds/api/users/" + process.argv[2] + "/uploads?v=1&max-results=2&orderby=published&alt=json";
     winston.info("Using different youtube user: " + process.argv[2]);
+} else if (process.env.YOUTUBE_CHANNEL) {
+    youtube_url = "https://gdata.youtube.com/feeds/api/users/" + process.env.YOUTUBE_CHANNEL + "/uploads?v=1&max-results=2&orderby=published&alt=json";
+    winston.info("Using env YOUTUBE_CHANNEL user: " + process.env.YOUTUBE_CHANNEL);
 } else {
-    var youtube_url = "https://gdata.youtube.com/feeds/api/users/sxephil/uploads?v=1&max-results=2&orderby=published&alt=json";
     winston.info("Using phil by default..");
 }
 
