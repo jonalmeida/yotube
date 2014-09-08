@@ -3,6 +3,9 @@
     "description": "Send a Yo when you upload a video to your channel",
     "version": "0.1.0",
     "main": "app.js",
+    "engine": {
+        "node": "0.10.31"
+    },
     "private": true,
     "dependencies": {
         "express": "2.5.8",
