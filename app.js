@@ -2,43 +2,48 @@
  * Module dependencies.
  */
 var express = require('express'),
-    routes = require('./routes'),
     request = require('request'),
     winston = require('winston'),
     fs = require('fs');
 var app = module.exports = express.createServer();
 
 var API_KEY = ""
-var STORAGE_FILE = "./config.json"
+var STORAGE_FILE = "./settings.json"
 var originalUrl = "";
-var youtube_url = "https://gdata.youtube.com/feeds/api/users/sxephil/uploads?v=1&max-results=2&orderby=published&alt=json";
+var YOUTUBE_CHANNEL = "";
+var youtube_url = "";
 
 // Logging
-winston.add(winston.transports.File, { filename: 'debug.log' });
+winston.add(winston.transports.File, {
+    filename: 'debug.log'
+});
 // Uncomment to stop logging to console
 //winston.remove(winston.transports.Console);
 
-// Read API_KEY from conf/settings.json file:
+// Read API_KEY from conf/settings.json file or env
 if (process.env.API_KEY) {
     API_KEY = process.env.API_KEY;
-} else if (API_KEY != "") {
-    fs.readFileSync("./conf/settings.json", function(err, data) {
-        if (err) throw err;
-        winston.info("Reading API_KEY from conf/settings.json")
-        API_KEY = JSON.parse(data).api_key
-    });
+    winston.info("Using env API_KEY..");
 }
-
-
-if (process.argv[2]) {
-    youtube_url = "https://gdata.youtube.com/feeds/api/users/" + process.argv[2] + "/uploads?v=1&max-results=2&orderby=published&alt=json";
-    winston.info("Using different youtube user: " + process.argv[2]);
-} else if (process.env.YOUTUBE_CHANNEL) {
+if (process.env.YOUTUBE_CHANNEL) {
+    YOUTUBE_CHANNEL = process.env.YOUTUBE_CHANNEL;
     youtube_url = "https://gdata.youtube.com/feeds/api/users/" + process.env.YOUTUBE_CHANNEL + "/uploads?v=1&max-results=2&orderby=published&alt=json";
     winston.info("Using env YOUTUBE_CHANNEL user: " + process.env.YOUTUBE_CHANNEL);
-} else {
-    winston.info("Using phil by default..");
 }
+
+if (API_KEY == "" || YOUTUBE_CHANNEL == "") {
+    var config_json = JSON.parse(fs.readFileSync("./conf/config.json"));
+    if (API_KEY == "")
+        API_KEY = config_json.api_key;
+    if (YOUTUBE_CHANNEL == "") {
+        YOUTUBE_CHANNEL = config_json.youtube_channel;
+        youtube_url = "https://gdata.youtube.com/feeds/api/users/" + config_json.youtube_channel + "/uploads?v=1&max-results=2&orderby=published&alt=json";
+    }
+    winston.info("Using config file because of missing env variables.");
+}
+
+winston.info("Youtube URL: " + youtube_url);
+winston.info("API key: " + API_KEY.slice(0, 4) + "..[hidden]");
 
 // Configuration
 
@@ -62,26 +67,27 @@ app.configure('production', function() {
     app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
+app.get('/', function(req, res) {
+    res.send({
+        response: "SERVER_OKAY"
+    });
+});
 
 app.get('/yo', function(req, res) {
     winston.info("Received a yo. Responding back...");
-    data = {
-        "api_token": API_KEY,
-        "username": req.query.username
-    };
-    request.post({
-            url: "https://api.justyo.co/yo/",
-            form: {
-                "api_token": API_KEY,
-                "username": req.query.username
-            }
-        },
-        function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                winston.info(body);
-            }
-        });
+    // response_payload = {
+    //     "api_token": API_KEY,
+    //     "username": req.query.username
+    // };
+    // request.post({
+    //         url: "https://api.justyo.co/yo/",
+    //         form: response_payload
+    //     },
+    //     function(error, response, body) {
+    //         if (!error && response.statusCode == 200) {
+    //             winston.info(body);
+    //         }
+    //     });
     if (fs.existsSync("users.file")) {
         winston.info("User registered:" + req.query.username);
         fs.appendFile("users.file", req.query.username + "\n", function(err) {
@@ -131,10 +137,11 @@ function sendYoAll(link) {
     if (link != undefined)
         yoResponse.form["link"] = link;
 
+
     request.post(yoResponse,
         function(error, response, body) {
-            if (!error) {
-                winston.info(body);
+            if (error) {
+                winston.error(body);
             }
         });
 }
@@ -184,7 +191,7 @@ function readJson() {
                 sendYoAll(tmp_url);
                 writeNewUrl(tmp_url);
                 originalUrl = tmp_url;
-                winston.info("New youtube_url: " + originalUrl);
+                winston.info("New channel url: " + originalUrl);
             };
         }
     });
