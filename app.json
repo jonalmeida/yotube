@@ -1,0 +1,19 @@
+{
+  "name": "Yotube",
+  "description": "An express app that sends a Yo when your Youtube channel uploads a video",
+  "keywords": [
+    "Yo",
+    "nodejs",
+    "express"
+  ],
+  "website": "https://github.com/jonalmeida/yotube",
+  "repository": "https://github.com/jonalmeida/yotube",
+  "success_url": "https://github.com/jonalmeida/yotube/blob/master/README.md",
+  "env": {
+    "YOUTUBE_CHANNEL": "sxephil",
+    "API_KEY": {
+      "description": "The API key from a Yo account. Get one from here: yoapi.justyo.co",
+      "generator": "secret"
+    }
+  }
+}
