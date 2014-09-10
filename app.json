@@ -10,10 +10,13 @@
   "repository": "https://github.com/jonalmeida/yotube",
   "success_url": "https://github.com/jonalmeida/yotube/blob/master/README.md",
   "env": {
-    "YOUTUBE_CHANNEL": "sxephil",
+    "YOUTUBE_CHANNEL": {
+      "description": "The youtube channel to monitor. (e.g. youtube.com/sxephil",
+      "value": "sxephil"
+    },
     "API_KEY": {
       "description": "The API key from a Yo account. Get one from here: yoapi.justyo.co",
-      "generator": "secret"
+      "value": ""
     }
   }
 }
