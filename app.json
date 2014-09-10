@@ -11,7 +11,7 @@
   "success_url": "https://github.com/jonalmeida/yotube/blob/master/README.md",
   "env": {
     "YOUTUBE_CHANNEL": {
-      "description": "The youtube channel to monitor. (e.g. youtube.com/sxephil",
+      "description": "The youtube channel to monitor. (e.g. youtube.com/sxephil)",
       "value": "sxephil"
     },
     "API_KEY": {
