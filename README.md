@@ -18,6 +18,7 @@ $ heroku open
 ```
 ### Step 2: Stop your app from idling
 There won't be much incoming activity since the app purely monitors YouTube channels, so Heroku will start to idle the app causing it to stop working correctly.
+
 To fix this, add your Heroku app to [Kaffeine](http://kaffeine.herokuapp.com/) to stop it from idling.
 
 ## LICENSE
