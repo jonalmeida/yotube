@@ -15,7 +15,7 @@
       "value": "sxephil"
     },
     "API_KEY": {
-      "description": "The API key from a Yo account. Get one from here: yoapi.justyo.co",
+      "description": "The API key from a Yo account. Get one from here: http://yoapi.justyo.co",
       "value": ""
     }
   }
