@@ -1,6 +1,6 @@
 {
     "name": "Yotube",
-    "description": "Send a Yo when you upload a video to your channel",
+    "description": "An express app that sends a Yo when your Youtube channel uploads a video",
     "version": "0.1.0",
     "main": "app.js",
     "engine": {
